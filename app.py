@@ -1,4 +1,4 @@
-from flask import Flask,render_template,jsonify
+from flask import Flask,render_template,jsonify,request
 from neo4j import GraphDatabase, basic_auth
 
 DATABASE_USERNAME = 'neo4j'
@@ -21,34 +21,32 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    query="""MATCH (n) RETURN n"""
+    result = session.run(query)
+    data=result.data()
+    print(data)
+    return render_template('index.html',data=data)
 
 
-#create
-@app.route("/create/<string:name>&<int:id>",methods=["GET","POST"]) 
-def create_node(name,id):
+#create 
+@app.route("/create",methods=["GET","POST"]) 
+def create_node():
     
     with driver.session() as session:
-        map={"name":name,"id":id}
-        session.run("CREATE (n:Employee{NAME: $name,ID:$id})",map)
+        uname = request.form['name']
+        age=request.form['age']
+        weight=request.form['weight']
+        print(uname)
+        map={"name":uname , "age":age , "weight":weight}
+        session.run("CREATE (n:Employee{NAME: $name,age:$age,weight:$weight})",map)
         x="Node created!"
-        print(type(x))
+        # print(type(x))
         return x
 
 #read
 @app.route("/read",methods=['GET','POST'])
 def get_nodes():
-    # print("Hello read tab")
-    # with driver.session() as session:
-    #     # map={"name":name}
-    #     # print(name)
-    #     result = session.run("MATCH (n) RETURN n.NAME as NAME , n.ID as ID")
-    #     print(result.data())
-    #     data=result.data()
-    #     # # mystring=' '.join(map(str,data))
-    #     print("jtuu python",type((jsonify(data))))
-    #     # print(session.run("MATCH (n) RETURN n"),'asihdas')
-    #     return (jsonify(data))
+
     query="""MATCH (n) RETURN n.NAME as NAME , n.ID as ID"""
     result = session.run(query)
     data=result.data()
@@ -71,7 +69,11 @@ def delete(name):
         map={"name":name}
         query="""MATCH (n:Employee) where n.NAME=$name  delete n """
         session.run(query,map)
-        return "Node Deleted"
+
+        query="""MATCH (n) RETURN n.NAME as NAME , n.ID as ID"""
+        result = session.run(query)
+        data=result.data()
+        return render_template('index.html',data=data)
 
 if __name__=="__main__":
     app.run(debug=True,port=5050)

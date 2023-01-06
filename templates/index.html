@@ -10,10 +10,10 @@
     <div>
         <table>
             <tr>
-                <form action="" method="post">
-                    <input type="text" placeholder="Name" id="name">
-                    <input type="text" placeholder="Age" id="age">
-                    <input type="text" placeholder="Weight" id="weight">
+                <form action="http://localhost:5050/create" method="post">
+                    <input type="text" placeholder="Name" name="name">
+                    <input type="text" placeholder="Age" name="age">
+                    <input type="text" placeholder="Weight" name="weight">
                     <input type="submit" value="Submit">
                 </form>
             </tr>
@@ -32,6 +32,13 @@
                 <td><button>Edit</button></td>
                 <td><button>Delete</button></td>
             </tr>
+            {% for data in data %}
+            <tr>
+                <td>{{data.NAME}}</td>
+                <td>{{data.age}}</td>
+                <td>{{data.weight}}</td>
+            </tr>
+            {% endfor %}
         </table>
     </div>
 </body>
