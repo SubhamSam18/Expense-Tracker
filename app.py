@@ -25,7 +25,15 @@ def home():
     result = session.run(query)
     data=result.data()
     print(data)
-    return render_template('index.html',data=data)
+    return render_template('index.html',totaldata=data)
+
+
+@app.route('/update/<string:name>&<int:age>&<int:weight>')
+def updatePage(name,age,weight):
+    map={"name":name,"age":age,"weight":weight}
+    print(map)
+    return render_template('index.html',map=map)
+
 
 
 #create 
@@ -39,12 +47,19 @@ def create_node():
         print(uname)
         map={"name":uname , "age":age , "weight":weight}
         session.run("CREATE (n:Employee{NAME: $name,age:$age,weight:$weight})",map)
-        x="Node created!"
-        # print(type(x))
-        return x
+        # x="Node created!"
+        # # print(type(x))
+        # return x
+
+        query="""MATCH (n) RETURN n"""
+        result = session.run(query)
+        data=result.data()
+        print(data)
+        return render_template('index.html',totaldata=data)
+
 
 #read
-@app.route("/read",methods=['GET','POST'])
+@app.route("/read",methods=['GET'])
 def get_nodes():
 
     query="""MATCH (n) RETURN n.NAME as NAME , n.ID as ID"""
@@ -53,27 +68,53 @@ def get_nodes():
     return (jsonify(data))
 
 
-@app.route("/update/<string:name>&<string:new_name>",methods=['GET','POST'])
-def update_nodes(name,new_name):
+
+#read single node
+@app.route("/getSNode",methods=['GET'])
+def get_single_node():
+    x = request.args.get("NAME")
+    # print(x)
+    map={"x":x}
+    query="""MATCH (n:Employee) WHERE n.NAME=$x RETURN n.NAME """
+    # query="""MATCH (n) RETURN n.NAME as NAME , n.ID as ID"""
+    result = session.run(query,map)
+    data=result.data()
+    print(data)
+    return (jsonify(data))
+
+
+
+#update
+@app.route("/update/<string:name>",methods=['GET','POST'])
+def update_nodes(name):
 
     with driver.session() as session:
-        map={"name":name,"new_name":new_name}
-        query="""MATCH (n:Employee) where n.NAME=$name  SET n.NAME=$new_name """
+        uname = request.form['name']
+        age=request.form['age']
+        weight=request.form['weight']
+        map={"new_name":uname,"age":age,"weight":weight,"name":name}
+        query="""MATCH (n:Employee) where n.NAME=$name SET n.NAME=$new_name,n.age=$age,n.weight=$weight """
         session.run(query,map)
         # data=result.data()
-        return "Node Updated"
+        query="""MATCH (n) RETURN n"""
+        result = session.run(query)
+        data=result.data()
+        print(data)
+        return render_template('index.html',totaldata=data)
     
+    
+#delete
 @app.route("/delete/<string:name>",methods=['GET','POST'])
 def delete(name):
     with driver.session() as session:
         map={"name":name}
         query="""MATCH (n:Employee) where n.NAME=$name  delete n """
         session.run(query,map)
-
-        query="""MATCH (n) RETURN n.NAME as NAME , n.ID as ID"""
+        query="""MATCH (n) RETURN n"""
         result = session.run(query)
         data=result.data()
-        return render_template('index.html',data=data)
+        print(data)
+        return render_template('index.html',totaldata=data)
 
 if __name__=="__main__":
     app.run(debug=True,port=5050)

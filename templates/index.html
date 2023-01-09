@@ -2,41 +2,66 @@
 <html>
 
 <head>
-    <h1>CRUD Operations</h1>
+    <!-- <h1>CRUD Operations</h1> -->
 
 </head>
 
 <body>
     <div>
-        <table>
+        <table >
             <tr>
-                <form action="http://localhost:5050/create" method="post">
-                    <input type="text" placeholder="Name" name="name">
-                    <input type="text" placeholder="Age" name="age">
-                    <input type="text" placeholder="Weight" name="weight">
+                {% if map %}
+                <form action="http://localhost:5050/update/{{map.name}}" method="post">
+                    <input type="text" placeholder="Name" name="name" value="{{map.name}}"><br/>
+                    <input type="text" placeholder="Age" name="age" value="{{map.age}}"><br/>
+                    <input type="text" placeholder="Weight" name="weight" value="{{map.weight}}"><br/>
                     <input type="submit" value="Submit">
                 </form>
+                {% endif %}
+                {% if not map %}
+                <form action="http://localhost:5050/create" method="post">
+                    <input type="text" placeholder="Name" name="name"><br/>
+                    <input type="text" placeholder="Age" name="age" ><br/>
+                    <input type="text" placeholder="Weight" name="weight" ><br/>
+                    <input type="submit" value="Submit">
+                </form>
+                {% endif %}
+                <!-- <br/>
+                <form action="http://localhost:5050/getSNode" method="get">
+                    <input type="text" placeholder="Search" name="search"/>
+                    <input type="submit" value="Submit">
+                </form> -->
             </tr>
             <br><br>
+            {% if not map %}
             <tr>
-                <td>Name</td>
-                <td>Age</td>
-                <td>Weight</td>
-                <td>Edit</td>
-                <td>Delete</td>
+                <td style="border: 1px solid black;">Name</td>
+                <td style="border: 1px solid black;">Age</td>
+                <td style="border: 1px solid black;">Weight</td>
+                <td style="border: 1px solid black;">Edit</td>
+                <td style="border: 1px solid black;">Delete</td>
             </tr>
-            <tr>
+            {% endif %}
+            <!-- <tr>
                 <td>Hello</td>
                 <td>12</td>
                 <td>34</td>
                 <td><button>Edit</button></td>
                 <td><button>Delete</button></td>
-            </tr>
-            {% for data in data %}
+            </tr> -->
+            {% for i in totaldata %}
             <tr>
-                <td>{{data.NAME}}</td>
-                <td>{{data.age}}</td>
-                <td>{{data.weight}}</td>
+                <td style="border: 1px solid black;">{{i.n.NAME}}</td>
+                <td style="border: 1px solid black;">{{i.n.age}}</td>
+                <td style="border: 1px solid black;">{{i.n.weight}}</td>
+                
+                    <form action="http://localhost:5050/update/{{i.n.NAME}}&{{i.n.age}}&{{i.n.weight}}">
+                        <td style="border: 1px solid black;"><button>Edit</button></td>
+                    </form>
+
+                <form action="http://localhost:5050/delete/{{i.n.NAME}}">
+                    <td style="border: 1px solid black;"><button>Delete</button></td>
+                </form>
             </tr>
             {% endfor %}
         </table>
@@ -44,3 +69,5 @@
 </body>
 
 </html>
+
+<!-- https://www.youtube.com/watch?v=XTpLbBJTOM4 -->
