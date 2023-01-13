@@ -5,26 +5,46 @@
     <!-- <h1>CRUD Operations</h1> -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style type="text/css">
+		body
+		{
+		    counter-reset: Serial;          
+		}
+
+		table
+		{
+		    border-collapse: separate;
+		}
+
+		tr td:first-child:before
+		{
+		  counter-increment: Serial;      
+		  content: counter(Serial); 
+		}
+	</style>
 </head>
 
 <body style="width: 100rem; align-items: center; margin: 40px;">
     <div>
+        <h1>Expense Tracker</h1>
+        <br>
         <table class="table table">
             <tr>
                 {% if map %}
-                <form action="http://localhost:5050/update/{{map.name}}" method="post" >
-                    <input type="text" placeholder="Name" name="name" value="{{map.name}}" class="form-control" required><br/>
-                    <input type="text" placeholder="Age" name="age" value="{{map.age}}" class="form-control" required><br/>
-                    <input type="text" placeholder="Weight" name="weight" value="{{map.weight}}" class="form-control" required><br/>
-                    <input type="submit" value="Submit">
+                <form action="http://localhost:5050/updatenode/{{map.ID}}" method="post" >
+                    <input type="text" placeholder="Amount" name="amount" value="{{map.amount}}" class="form-control" required><br/>
+                    <input type="text" placeholder="Description" name="desc" value="{{map.desc}}" class="form-control" required><br/>
+                    <input type="date" placeholder="Date" name="date" value="{{map.date}}" class="form-control" required><br/>
+                    <input type="submit" class="btn btn-primary" value="Add">
                 </form>
                 {% endif %}
                 {% if not map %}
                 <form action="http://localhost:5050/create" method="post" class="form-control" >
-                    <input type="text" placeholder="Name" name="name" class="form-control" required><br/>
-                    <input type="text" placeholder="Age" name="age" class="form-control" required><br/>
-                    <input type="text" placeholder="Weight" name="weight" class="form-control" required><br/>
-                    <input type="submit" value="Submit" class="btn btn-primary">
+                    <input type="text" placeholder="Amount" name="amount"  class="form-control" required><br/>
+                    <input type="text" placeholder="Description" name="desc"  class="form-control" required><br/>
+                    <input type="date" placeholder="Date" name="date" class="form-control" required><br/>
+                    <input type="submit" value="Add" class="btn btn-primary">
                 </form>
                 {% endif %}
                 <!-- <br/>
@@ -36,32 +56,29 @@
             <br><br>
             {% if not map %}
             <tr>
-                <td >Name</td>
-                <td >Age</td>
-                <td >Weight</td>
-                <td >Edit</td>
-                <td >Delete</td>
+                <th>ID</th>
+                <th >Description</th>
+                <th >Amount</th>
+                <th >Date</th>
+                <!-- <td >Total</td> -->
+                <th >Edit</th>
+                <th >Delete</th>
             </tr>
             {% endif %}
-            <!-- <tr>
-                <td>Hello</td>
-                <td>12</td>
-                <td>34</td>
-                <td><button>Edit</button></td>
-                <td><button>Delete</button></td>
-            </tr> -->
+
             {% for i in totaldata %}
             <tr>
-                <td >{{i.n.NAME}}</td>
-                <td >{{i.n.age}}</td>
-                <td >{{i.n.weight}}</td>
+                <td ></td>
+                <td >{{i.n.Desc}}</td>
+                <td >{{i.n.Amount}}</td>
+                <td >{{i.n.Date}}</td>
                 
-                    <form action="http://localhost:5050/update/{{i.n.NAME}}&{{i.n.age}}&{{i.n.weight}}">
-                        <td ><button>Edit</button></td>
+                    <form action="http://localhost:5050/update/{{i.n.Desc}}&{{i.n.Amount}}&{{i.n.Date}}&{{i.n.ID}}">
+                        <td ><button class="btn btn-primary">Edit</button></td>
                     </form>
 
-                <form action="http://localhost:5050/delete/{{i.n.NAME}}">
-                    <td ><button>Delete</button></td>
+                <form action="http://localhost:5050/delete/{{i.n.ID}}">
+                    <td ><button class="btn btn-primary">Delete</button></td>
                 </form>
             </tr>
             {% endfor %}

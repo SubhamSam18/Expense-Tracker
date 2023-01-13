@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+
+  db:
+    container_name: neo
+    image: neo4j:4.4.16
+    ports:
+      - '7474:7474'
+      - '7687:7687'
+    volumes:
+      - 'neo1:/data'
+    environment:
+      - NEO4J_AUTH=neo4j/test
+  web:
+    container_name: flask
+    build: '.'
+    depends_on:
+      - 'db'
+    ports: 
+      - '5050:5000'
+    volumes:
+      - '.:/app'
+    links:
+      - 'db:db'
+
+volumes:
+  neo1:
